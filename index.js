@@ -6,11 +6,10 @@ const { writeFile } = require('fs');
 // app.get('/', (req, res) => {
 //   res.send('Hello World!!');
 // });
- function saveImageToJson(imageUrls) {
-  const filePath = './catImages.json'
-  // figure out logic, use writeFile method 
- }
-// get all cats
+
+// create function
+
+ // get all cat images
 app.get('/cat-images', async (req, res) => {
   try {
     const response = await axios.get('https://api.thecatapi.com/v1/images/search?limit=15', {
@@ -26,6 +25,27 @@ app.get('/cat-images', async (req, res) => {
     res.status(500).send('cant fetch cat image');
   }
 });
+
+// Save the fetched cat images to JSON files for persistent storage.
+function saveImageToJson(imageUrls) {
+  const filePath = './catImages.json'
+
+  const data = JSON.stringify(imageUrls, null, 2);
+
+  writeFile(filePath, data, (error) => {
+    if (error) {
+      console.log('An error has occurred ', error);
+      return;
+    }
+    console.log('Data written successfully to disk');
+  });
+ }
+
+ // update function
+
+ // delete function
+
+
 
 
 
