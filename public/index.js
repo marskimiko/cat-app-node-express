@@ -4,15 +4,10 @@ async function fetchCatImages() {
     try {
         const response = await fetch('/cat-images');
         const catData = await response.json()
-        // console.log(catData)
 
         const imageContainer = document.getElementById('cat-image-container');
         imageContainer.innerHTML = '';
 
-        // imageUrls.forEach((url, index) => {
-        //     const card = createCard(url, index);
-        //     imageContainer.appendChild(card);
-        // });
 
         catData.forEach(({ url, id}) => {
             const card = createCard(url, id);
@@ -42,6 +37,7 @@ function createCard(url, id) {
         <button type="button">Cancel</button>
     `
     formContainer.appendChild(form);
+    form.onsubmit = (e) => editCat(e, id, formContainer);
 
     const cancelButton = formContainer.querySelector('button[type="button"]')
     cancelButton.addEventListener('click', function () {
@@ -61,8 +57,8 @@ function createCard(url, id) {
     const editButton = document.createElement('button');
     editButton.textContent = 'edit'
     editButton.addEventListener('click', function() {
-        // editCat(editButton)
-        toggleForm(formContainer, true)
+        // console.log(id);
+        toggleForm(formContainer, true);
     })
 
 
@@ -90,10 +86,32 @@ async function deleteCat(id, cardElement) {
     }
 }
 
-function editCat(editButton) {
+async function editCat(e, id, formContainer) {
+    e.preventDefault();
+    const updatedUrl = formContainer.querySelector("input[name='url']").value
+    try {
+        const response = await fetch(`/cat-image/${id}`, {
+            method: 'PATCH', 
+            headers: {
+                'Content-Type': 'application/json',
+            }, 
+            body: JSON.stringify({ url: updatedUrl}),
+        });
+        if (response.ok) {
+            console.log('image updated');
+            const imgElement = formContainer.parentNode.querySelector('img');
+            imgElement.src = updatedUrl;
 
+        } else {
+            console.error('Error updating cat image', error)
+        }
+
+    } catch (error) {
+        console.error('cannot edit cat:', error)
+    }
 }
 
 function toggleForm(formContainer, showForm) {
+    // console.log(showForm);
     formContainer.style.display = showForm ? 'block' : 'none';
 }
