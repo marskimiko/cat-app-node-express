@@ -36,13 +36,11 @@ app.get('/cat-images', async (req, res) => {
         'x-api-key': ''
       }
     });
-    // const imageUrls = response.data.map(cat => cat.url)
 
     const catData = response.data.map(cat => ({
       id: cat.id,
       url: cat.url
     }))
-    // saveImageToJson(imageUrls); // Save the image URLs to a JSON file
     saveImageToJson(catData)
     res.send(catData);
   } catch (error) {

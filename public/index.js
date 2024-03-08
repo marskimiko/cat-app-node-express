@@ -100,9 +100,6 @@ async function handleAddCat(e) {
 
         if (response.ok) {
             const newCat = await response.json();
-            console.log('cat added:', newCat);
-            // fetchCatImages();
-
             const newCatCard = createCard(newCat.url, newCat.id)
             document.getElementById('cat-image-container').appendChild(newCatCard);
             urlInput.value = ''; 
@@ -155,6 +152,5 @@ async function editCat(e, id, formContainer) {
 }
 
 function toggleForm(formContainer, showForm) {
-    // console.log(showForm);
     formContainer.style.display = showForm ? 'block' : 'none';
 }
