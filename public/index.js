@@ -1,4 +1,15 @@
-document.addEventListener('DOMContentLoaded', fetchCatImages);
+// document.addEventListener('DOMContentLoaded', fetchCatImages);
+
+document.addEventListener('DOMContentLoaded', async() => {
+    await fetchCatImages();
+
+    const newCat = document.getElementById('create-cat');
+    if (newCat) {
+        newCat.addEventListener('submit', handleAddCat)
+    } else {
+        console.error('cannot add cat')
+    }
+})
 
 async function fetchCatImages() {
     try {
@@ -28,6 +39,7 @@ function createCard(url, id) {
     imgElement.alt = "random cat";
 
     const formContainer = document.createElement('div');
+    formContainer.className = 'form-container';
     formContainer.style.display = 'none';
 
     const form = document.createElement('form');
@@ -70,6 +82,37 @@ function createCard(url, id) {
     card.appendChild(buttonContainer);
 
     return card;
+}
+
+async function handleAddCat(e) {
+    e.preventDefault();
+    const urlInput = document.getElementById('cat-url');
+    const catUrl = urlInput.value;
+
+    try {
+        const response = await fetch('/cat-images', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }, 
+            body: JSON. stringify({ url: catUrl }),
+        })
+
+        if (response.ok) {
+            const newCat = await response.json();
+            console.log('cat added:', newCat);
+            // fetchCatImages();
+
+            const newCatCard = createCard(newCat.url, newCat.id)
+            document.getElementById('cat-image-container').appendChild(newCatCard);
+            urlInput.value = ''; 
+        } else {
+            console.error('new cat failed');
+        }
+
+    } catch (error) {
+        console.error('cannot add new cat:', error)
+    }
 }
 
 async function deleteCat(id, cardElement) {
